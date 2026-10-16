@@ -385,8 +385,33 @@ function frame(time){
 }
 requestAnimationFrame(frame);
 try{
- const res=await fetch('flights.json');if(!res.ok)throw Error('Flight-time dataset could not be loaded.');const snapshot=await res.json();if(snapshot.route_files){snapshot.routes=(await Promise.all(snapshot.route_files.map(async file=>{if(!/^flight-observations-\d{3}\.json$/.test(file))throw Error('Invalid observation asset.');const response=await fetch(file);if(!response.ok)throw Error('Nonstop observations could not be loaded.');return response.json();}))).flat();}builtFlights=prepare(snapshot);sourceData=builtFlights;$('dataset').value='flights';updateAircraftOptions();applyFilters();
-}catch(e){$('load-error').hidden=false;$('load-error').textContent=e.message+' You can still import your own CSV.';$('phase').textContent='Dataset unavailable';}
+ $('loading-label').textContent='Loading flight data…';
+ const res=await fetch('flights.json');
+ if(!res.ok)throw Error('Flight-time dataset could not be loaded.');
+ const snapshot=await res.json();
+ if(snapshot.route_files?.length){
+  let completed=0;const total=snapshot.route_files.length;
+  $('loading-progress').value=0;$('loading-percent').textContent='0%';
+  snapshot.routes=(await Promise.all(snapshot.route_files.map(async file=>{
+   if(!/^flight-observations-\d{3}\.json$/.test(file))throw Error('Invalid observation asset.');
+   const response=await fetch(file);
+   if(!response.ok)throw Error('Nonstop observations could not be loaded.');
+   const routes=await response.json();
+   if($('initial-loading').dataset.state!=='error'){
+    const percent=Math.round(++completed/total*100);
+    $('loading-progress').value=percent;$('loading-percent').textContent=`${percent}%`;
+   }
+   return routes;
+  }))).flat();
+ }
+ $('loading-label').textContent='Preparing reconstruction…';$('loading-percent').textContent='';$('loading-progress').removeAttribute('value');
+ await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+ builtFlights=prepare(snapshot);sourceData=builtFlights;$('dataset').value='flights';updateAircraftOptions();applyFilters();
+ $('initial-loading').hidden=true;
+}catch(e){
+ $('initial-loading').dataset.state='error';$('loading-label').textContent='Flight data unavailable';$('loading-percent').textContent='';$('loading-progress').hidden=true;
+ $('load-error').hidden=false;$('load-error').textContent=e.message+' You can still import your own CSV.';$('phase').textContent='Dataset unavailable';
+}
 
 // Optional native browser tool interface, using exactly the same visible actions.
 if(document.modelContext?.registerTool){

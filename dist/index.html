@@ -10,6 +10,10 @@
 <body>
  <header class="topbar"><a class="brand" href="./" aria-label="Time / Space home"><span class="brand-mark">T<span>/</span>S</span><span>TIME <i>/</i> SPACE</span></a><div class="topnote">DISTANCE RECONSTRUCTION</div><button id="import" class="button subtle small">Import CSV</button><button id="csv-format-open" class="text-button" aria-haspopup="dialog" aria-controls="csv-format-dialog">CSV format</button><button id="method-open" class="text-button">About</button><input type="file" id="file" accept=".csv,text/csv" hidden></header>
  <main>
+  <div id="initial-loading" class="initial-loading">
+   <div class="loading-caption"><span id="loading-label" role="status">Loading app…</span><span id="loading-percent" aria-hidden="true"></span></div>
+   <progress id="loading-progress" max="100" aria-label="Flight data loading progress"></progress>
+  </div>
   <div id="notice" role="status" hidden></div>
   <div class="lab">
    <section class="viewport" aria-label="Interactive 3D airport reconstruction">
