@@ -20,11 +20,20 @@ No npm installation is required for this app. `dist/` contains the complete
 static website, including all flight observations, flags, examples, and reports.
 The Python collection and validation scripts use the standard library.
 
-The parent website copies `dist/` into `static/lab/airport-time-space/` before
-`npm start` or `npm run build`, and GitHub Pages serves it at
-`https://yadan.net/lab/airport-time-space/`. The generated copy is ignored by Git.
-After changing app files during website development, restart the parent dev
-server, or run `node scripts/prepare-lab.mjs` from the repository root.
+The published app remains at <https://yadan.net/lab/airport-time-space/>.
+The [website repository](https://github.com/omry/yadan.net) downloads a pinned,
+checksum-verified release archive into its generated static files. App source,
+datasets, and reports are maintained here.
+
+## Releases
+
+Push a `v*` tag to run the checks and publish `airport-time-space.tar.gz` as a
+GitHub release asset. The archive contains the complete `dist/` website.
+
+To deploy an app update, update the release URL and SHA-256 in
+`lab/airport-time-space.release.json` in the website repository, then deploy
+that website. Get the archive checksum with `sha256sum airport-time-space.tar.gz`.
+Existing website deployments keep using their pinned app release.
 
 ## Experiments and fitting
 
@@ -76,3 +85,7 @@ only optional runtime network dependency; system fonts provide a fallback.
 This import preserves the deployed app from source commit
 `bf727d703e58716a4ae572213d7139fb195101e9`; Sites project metadata and credentials
 are not part of the repository.
+
+This repository was extracted from `lab/airport-time-space/` in
+`omry/yadan.net`, originally imported there in commit
+`c9a834023fe5704ff7017dc41e6fabc11a9901ea`.
