@@ -8,5 +8,6 @@
     "start": "python3 -m http.server 3000 --directory dist",
     "benchmark": "node scripts/benchmark-sphere.mjs",
     "benchmark:plane": "node scripts/benchmark-plane.mjs"
-  }
+  },
+  "packageManager": "npm@11.9.0"
 }
